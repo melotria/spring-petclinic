@@ -51,3 +51,15 @@ INSERT INTO visits VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits VALUES (4, 7, '2013-01-04', 'spayed');
+
+-- Dog goods data
+INSERT INTO dog_goods VALUES (1, 'Premium Dog Food', 'High-quality dog food for all breeds', 29.99, 'Food', 100);
+INSERT INTO dog_goods VALUES (2, 'Chew Toy', 'Durable chew toy for dogs', 12.99, 'Toys', 50);
+INSERT INTO dog_goods VALUES (3, 'Dog Bed', 'Comfortable bed for small to medium dogs', 49.99, 'Bedding', 30);
+INSERT INTO dog_goods VALUES (4, 'Dog Leash', 'Strong and durable leash', 15.99, 'Accessories', 75);
+INSERT INTO dog_goods VALUES (5, 'Dog Collar', 'Adjustable collar for all sizes', 9.99, 'Accessories', 80);
+INSERT INTO dog_goods VALUES (6, 'Dog Shampoo', 'Gentle shampoo for sensitive skin', 14.99, 'Grooming', 60);
+INSERT INTO dog_goods VALUES (7, 'Dog Brush', 'Effective brush for all coat types', 19.99, 'Grooming', 45);
+INSERT INTO dog_goods VALUES (8, 'Dog Treats', 'Delicious treats for training', 8.99, 'Food', 120);
+INSERT INTO dog_goods VALUES (9, 'Dog Bowl', 'Non-slip food and water bowl', 16.99, 'Accessories', 65);
+INSERT INTO dog_goods VALUES (10, 'Dog Coat', 'Warm coat for cold weather', 34.99, 'Clothing', 25);
