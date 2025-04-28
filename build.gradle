@@ -1,5 +1,7 @@
 plugins {
   id 'java'
+  id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+  id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
   id 'org.springframework.boot' version '3.4.2'
   id 'io.spring.dependency-management' version '1.1.6'
   id 'org.graalvm.buildtools.native' version '0.10.3'
@@ -21,6 +23,22 @@ java {
   sourceCompatibility = JavaVersion.VERSION_17
 }
 
+kotlin {
+  jvmToolchain(17)
+}
+
+sourceSets {
+  main.kotlin.srcDirs += 'src/main/kotlin'
+  test.kotlin.srcDirs += 'src/test/kotlin'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+  kotlinOptions {
+    freeCompilerArgs = ['-Xjsr305=strict']
+    jvmTarget = '17'
+  }
+}
+
 repositories {
   mavenCentral()
 }
@@ -34,6 +52,15 @@ ext.webjarsBootstrapVersion = "5.3.3"
 dependencies {
   // Workaround for AOT issue (https://github.com/spring-projects/spring-framework/pull/33949) -->
   implementation 'io.projectreactor:reactor-core'
+
+  // Kotlin
+  implementation 'org.jetbrains.kotlin:kotlin-stdlib'
+  implementation 'org.jetbrains.kotlin:kotlin-reflect'
+
+  // Kotlin Coroutines
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.3'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3'
 
   implementation 'org.springframework.boot:spring-boot-starter-cache'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
