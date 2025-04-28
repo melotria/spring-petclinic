@@ -19,16 +19,15 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.annotation.Nonnull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Sort;
 
 /**
- * Repository class for <code>Owner</code> domain objects All method names are compliant
- * with Spring Data naming conventions so this interface can easily be extended for Spring
- * Data. See:
- * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
+ * Repository class for <code>Owner</code> domain objects using Quarkus Panache.
  *
  * @author Ken Krebs
  * @author Juergen Hoeller
@@ -36,23 +35,32 @@ import org.springframework.data.jpa.repository.Query;
  * @author Michael Isvy
  * @author Wick Dynex
  */
-public interface OwnerRepository extends JpaRepository<Owner, Integer> {
+@ApplicationScoped
+public class OwnerRepository implements PanacheRepository<Owner> {
+
+    @Inject
+    EntityManager entityManager;
 
 	/**
 	 * Retrieve all {@link PetType}s from the data store.
 	 * @return a Collection of {@link PetType}s.
 	 */
-	@Query("SELECT ptype FROM PetType ptype ORDER BY ptype.name")
-	List<PetType> findPetTypes();
+	public List<PetType> findPetTypes() {
+		return entityManager.createQuery("SELECT ptype FROM PetType ptype ORDER BY ptype.name", PetType.class)
+			.getResultList();
+	}
 
 	/**
 	 * Retrieve {@link Owner}s from the data store by last name, returning all owners
 	 * whose last name <i>starts</i> with the given name.
 	 * @param lastName Value to search for
-	 * @return a Collection of matching {@link Owner}s (or an empty Collection if none
-	 * found)
+	 * @param page Page number (1-based)
+	 * @param pageSize Page size
+	 * @return a Page of matching {@link Owner}s (or an empty Page if none found)
 	 */
-	Page<Owner> findByLastNameStartingWith(String lastName, Pageable pageable);
+	public io.quarkus.panache.common.Page<Owner> findByLastNameStartingWith(String lastName, int page, int pageSize) {
+		return find("lastName LIKE ?1", Sort.by("lastName"), lastName + "%").page(Page.of(page - 1, pageSize));
+	}
 
 	/**
 	 * Retrieve an {@link Owner} from the data store by id.
@@ -64,14 +72,24 @@ public interface OwnerRepository extends JpaRepository<Owner, Integer> {
 	 * @param id the id to search for
 	 * @return an {@link Optional} containing the {@link Owner} if found, or an empty
 	 * {@link Optional} if not found.
-	 * @throws IllegalArgumentException if the id is null (assuming null is not a valid
-	 * input for id)
+	 * @throws IllegalArgumentException if the id is null
 	 */
-	Optional<Owner> findById(@Nonnull Integer id);
+	@Override
+	public Optional<Owner> findByIdOptional(@Nonnull Integer id) {
+		if (id == null) {
+			throw new IllegalArgumentException("ID cannot be null");
+		}
+		return Optional.ofNullable(findById(id));
+	}
 
 	/**
-	 * Returns all the owners from data store
+	 * Returns all the owners from data store with pagination
+	 * @param page Page number (1-based)
+	 * @param pageSize Page size
+	 * @return a Page of {@link Owner}s
 	 **/
-	Page<Owner> findAll(Pageable pageable);
+	public io.quarkus.panache.common.Page<Owner> findAllPaginated(int page, int pageSize) {
+		return findAll().page(Page.of(page - 1, pageSize));
+	}
 
 }

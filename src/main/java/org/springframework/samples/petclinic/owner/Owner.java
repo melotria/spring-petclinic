@@ -17,11 +17,11 @@ package org.springframework.samples.petclinic.owner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.model.Person;
-import org.springframework.util.Assert;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -145,14 +145,15 @@ public class Owner extends Person {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId())
-			.append("new", this.isNew())
-			.append("lastName", this.getLastName())
-			.append("firstName", this.getFirstName())
-			.append("address", this.address)
-			.append("city", this.city)
-			.append("telephone", this.telephone)
-			.toString();
+		return "Owner{" +
+			"id=" + this.getId() +
+			", new=" + this.isNew() +
+			", lastName='" + this.getLastName() + '\'' +
+			", firstName='" + this.getFirstName() + '\'' +
+			", address='" + this.address + '\'' +
+			", city='" + this.city + '\'' +
+			", telephone='" + this.telephone + '\'' +
+			'}';
 	}
 
 	/**
@@ -161,13 +162,14 @@ public class Owner extends Person {
 	 * @param visit the visit to add, must not be {@literal null}.
 	 */
 	public void addVisit(Integer petId, Visit visit) {
-
-		Assert.notNull(petId, "Pet identifier must not be null!");
-		Assert.notNull(visit, "Visit must not be null!");
+		Objects.requireNonNull(petId, "Pet identifier must not be null!");
+		Objects.requireNonNull(visit, "Visit must not be null!");
 
 		Pet pet = getPet(petId);
 
-		Assert.notNull(pet, "Invalid Pet identifier!");
+		if (pet == null) {
+			throw new IllegalArgumentException("Invalid Pet identifier!");
+		}
 
 		pet.addVisit(visit);
 	}
