@@ -5,6 +5,7 @@ DROP TABLE visits IF EXISTS;
 DROP TABLE pets IF EXISTS;
 DROP TABLE types IF EXISTS;
 DROP TABLE owners IF EXISTS;
+DROP TABLE dog_goods IF EXISTS;
 
 
 CREATE TABLE vets (
@@ -62,3 +63,14 @@ CREATE TABLE visits (
 );
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
+
+CREATE TABLE dog_goods (
+  id             INTEGER IDENTITY PRIMARY KEY,
+  name           VARCHAR(80),
+  description    VARCHAR(255),
+  price          DOUBLE,
+  category       VARCHAR(80),
+  stock_quantity INTEGER
+);
+CREATE INDEX dog_goods_name ON dog_goods (name);
+CREATE INDEX dog_goods_category ON dog_goods (category);

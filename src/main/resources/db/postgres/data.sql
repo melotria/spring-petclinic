@@ -51,3 +51,15 @@ INSERT INTO visits (pet_id, visit_date, description) SELECT 7, '2010-03-04', 'ra
 INSERT INTO visits (pet_id, visit_date, description) SELECT 8, '2011-03-04', 'rabies shot' WHERE NOT EXISTS (SELECT * FROM visits WHERE id=2);
 INSERT INTO visits (pet_id, visit_date, description) SELECT 8, '2009-06-04', 'neutered' WHERE NOT EXISTS (SELECT * FROM visits WHERE id=3);
 INSERT INTO visits (pet_id, visit_date, description) SELECT 7, '2008-09-04', 'spayed' WHERE NOT EXISTS (SELECT * FROM visits WHERE id=4);
+
+-- Dog goods data
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Premium Dog Food', 'High-quality dog food for all breeds', 29.99, 'Food', 100 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=1);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Chew Toy', 'Durable chew toy for dogs', 12.99, 'Toys', 50 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=2);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Bed', 'Comfortable bed for small to medium dogs', 49.99, 'Bedding', 30 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=3);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Leash', 'Strong and durable leash', 15.99, 'Accessories', 75 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=4);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Collar', 'Adjustable collar for all sizes', 9.99, 'Accessories', 80 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=5);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Shampoo', 'Gentle shampoo for sensitive skin', 14.99, 'Grooming', 60 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=6);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Brush', 'Effective brush for all coat types', 19.99, 'Grooming', 45 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=7);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Treats', 'Delicious treats for training', 8.99, 'Food', 120 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=8);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Bowl', 'Non-slip food and water bowl', 16.99, 'Accessories', 65 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=9);
+INSERT INTO dog_goods (name, description, price, category, stock_quantity) SELECT 'Dog Coat', 'Warm coat for cold weather', 34.99, 'Clothing', 25 WHERE NOT EXISTS (SELECT * FROM dog_goods WHERE id=10);
