@@ -1,35 +1,42 @@
-# Spring PetClinic Sample Application [![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-projects/spring-petclinic/actions/workflows/gradle-build.yml)
+# Quarkus PetClinic Sample Application
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-projects/spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
+This is a Quarkus version of the Spring PetClinic application, demonstrating how to build a full-stack web application using Quarkus.
 
-## Understanding the Spring Petclinic application with a few diagrams
+## Understanding the PetClinic application
 
-[See the presentation here](https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application)
+The PetClinic is a simple CRUD application that manages pet clinic data including owners, pets, veterinarians, and visits.
 
-## Run Petclinic locally
+## Run PetClinic locally
 
-Spring Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/). You can build a jar file and run it from the command line (it should work just as well with Java 17 or newer):
+Quarkus PetClinic is a [Quarkus](https://quarkus.io/) application built using [Maven](https://maven.apache.org/). You can build a jar file and run it from the command line (it requires Java 17 or newer):
+
+### Development Mode
 
 ```bash
-git clone https://github.com/spring-projects/spring-petclinic.git
-cd spring-petclinic
-./mvnw package
-java -jar target/*.jar
+./mvnw quarkus:dev
 ```
 
-(On Windows, or if your shell doesn't expand the glob, you might need to specify the JAR file name explicitly on the command line at the end there.)
+This will start the application in development mode with hot reload enabled.
 
-You can then access the Petclinic at <http://localhost:8080/>.
+### Production Mode
+
+```bash
+./mvnw package
+java -jar target/quarkus-app/quarkus-run.jar
+```
+
+You can then access the PetClinic at <http://localhost:8080/>.
 
 <img width="1042" alt="petclinic-screenshot" src="https://cloud.githubusercontent.com/assets/838318/19727082/2aee6d6c-9b8e-11e6-81fe-e889a5ddfded.png">
 
-Or you can run it from Maven directly using the Spring Boot Maven plugin. If you do this, it will pick up changes that you make in the project immediately (changes to Java source files require a compile as well - most people use an IDE for this):
+### Native Mode
+
+You can also build a native executable for better performance:
 
 ```bash
-./mvnw spring-boot:run
+./mvnw package -Pnative
+./target/quarkus-petclinic-1.0.0-SNAPSHOT-runner
 ```
-
-> NOTE: If you prefer to use Gradle, you can build the app using `./gradlew build` and look for the jar file in `build/libs`.
 
 ## Building a Container
 

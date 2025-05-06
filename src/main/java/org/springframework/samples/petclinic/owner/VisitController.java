@@ -15,20 +15,23 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
+import io.quarkus.qute.Template;
+import io.quarkus.qute.TemplateInstance;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.ws.rs.BeanParam;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 
 /**
  * @author Juergen Hoeller
@@ -38,63 +41,89 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author Dave Syer
  * @author Wick Dynex
  */
-@Controller
+@Path("/owners/{ownerId}/pets/{petId}/visits")
+@Produces(MediaType.TEXT_HTML)
 class VisitController {
 
-	private final OwnerRepository owners;
+	@Inject
+	OwnerRepository owners;
 
-	public VisitController(OwnerRepository owners) {
-		this.owners = owners;
-	}
-
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
+	@Inject
+	Template createOrUpdateVisitForm;
 
 	/**
-	 * Called before each and every @RequestMapping annotated method. 2 goals: - Make sure
-	 * we always have fresh data - Since we do not use the session scope, make sure that
-	 * Pet object always has an id (Even though id is not part of the form fields)
+	 * Helper method to load pet and owner data
+	 * @param ownerId
 	 * @param petId
-	 * @return Pet
+	 * @return Visit
 	 */
-	@ModelAttribute("visit")
-	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
-			Map<String, Object> model) {
-		Optional<Owner> optionalOwner = owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
+	private Visit loadPetWithVisit(@PathParam("ownerId") int ownerId, @PathParam("petId") int petId) {
+		Owner owner = owners.findByIdOptional(ownerId)
+			.orElseThrow(() -> new IllegalArgumentException(
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
 
 		Pet pet = owner.getPet(petId);
-		model.put("pet", pet);
-		model.put("owner", owner);
+		if (pet == null) {
+			throw new IllegalArgumentException("Pet not found with id: " + petId);
+		}
 
 		Visit visit = new Visit();
 		pet.addVisit(visit);
 		return visit;
 	}
 
-	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
-	// called
-	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String initNewVisitForm() {
-		return "pets/createOrUpdateVisitForm";
+	@GET
+	@Path("/new")
+	public TemplateInstance initNewVisitForm(@PathParam("ownerId") int ownerId, @PathParam("petId") int petId) {
+		Owner owner = owners.findByIdOptional(ownerId)
+			.orElseThrow(() -> new IllegalArgumentException(
+				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
+
+		Pet pet = owner.getPet(petId);
+		if (pet == null) {
+			throw new IllegalArgumentException("Pet not found with id: " + petId);
+		}
+
+		Visit visit = loadPetWithVisit(ownerId, petId);
+
+		return createOrUpdateVisitForm
+			.data("visit", visit)
+			.data("pet", pet)
+			.data("owner", owner);
 	}
 
-	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
-	// called
-	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-			BindingResult result, RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			return "pets/createOrUpdateVisitForm";
+	@POST
+	@Path("/new")
+	@Transactional
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response processNewVisitForm(@PathParam("ownerId") int ownerId, @PathParam("petId") int petId,
+			@BeanParam @Valid Visit visit) {
+		Owner owner = owners.findByIdOptional(ownerId)
+			.orElseThrow(() -> new IllegalArgumentException(
+				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
+
+		Pet pet = owner.getPet(petId);
+		if (pet == null) {
+			throw new IllegalArgumentException("Pet not found with id: " + petId);
+		}
+
+		// Validation
+		if (visit.getDescription() == null || visit.getDescription().trim().isEmpty()) {
+			return Response.ok(createOrUpdateVisitForm
+				.data("visit", visit)
+				.data("pet", pet)
+				.data("owner", owner)
+				.data("error", "Description must not be empty"))
+				.build();
 		}
 
 		owner.addVisit(petId, visit);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
-		return "redirect:/owners/{ownerId}";
+		this.owners.persist(owner);
+
+		return Response.seeOther(
+			UriBuilder.fromPath("/owners/{id}")
+				.build(owner.getId()))
+			.build();
 	}
 
 }
