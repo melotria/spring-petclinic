@@ -17,7 +17,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: melotria/junie-workflows/.github/workflows/ej-issue.yml@main
+    uses: jetbrains-junie/junie-workflows/.github/workflows/ej-issue.yml@hack
     with:
       workflow_params: ${{ inputs.workflow_params }}
       fix_conflicts: false
