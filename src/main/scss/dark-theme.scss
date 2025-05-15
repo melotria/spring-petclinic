@@ -1,0 +1,113 @@
+:root {
+  --primary-color: #6db33f;
+  --primary-dark-color: #5fa134;
+  --secondary-color: #34302d;
+  --text-color: #212529;
+  --background-color: #fff;
+  --light-background: #f1f1f1;
+  --border-color: #dee2e6;
+  --input-bg: #fff;
+  --input-border: #ced4da;
+  --card-bg: #fff;
+  --card-border: rgba(0, 0, 0, 0.125);
+}
+
+[data-bs-theme="dark"] {
+  --primary-color: #6db33f;
+  --primary-dark-color: #5fa134;
+  --secondary-color: #34302d;
+  --text-color: #f1f1f1;
+  --background-color: #212529;
+  --light-background: #343a40;
+  --border-color: #495057;
+  --input-bg: #2b3035;
+  --input-border: #495057;
+  --card-bg: #2b3035;
+  --card-border: rgba(255, 255, 255, 0.125);
+
+  background-color: var(--background-color);
+  color: var(--text-color);
+
+  .navbar {
+    background-color: var(--secondary-color);
+  }
+
+  .table {
+    color: var(--text-color);
+    border-color: var(--border-color);
+
+    > thead > tr > th {
+      background-color: var(--light-background);
+      color: var(--text-color);
+    }
+
+    > tbody > tr > td {
+      border-color: var(--border-color);
+    }
+  }
+
+  .table-filter {
+    background-color: var(--light-background);
+  }
+
+  .btn-primary {
+    color: var(--text-color);
+    background-color: var(--secondary-color);
+    border-color: var(--primary-color);
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active,
+    .open .dropdown-toggle {
+      background-color: var(--secondary-color);
+      border-color: var(--primary-dark-color);
+    }
+  }
+
+  .form-control, .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-color);
+
+    &:focus {
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
+  }
+
+  .card {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+  }
+
+  hr {
+    border-top: 1px dotted var(--border-color);
+  }
+
+  .container-details-table th {
+    background-color: var(--light-background);
+    color: var(--text-color);
+  }
+
+  .status-help-content-table td {
+    color: var(--text-color);
+  }
+
+  a {
+    color: var(--primary-color);
+
+    &:hover {
+      color: var(--primary-dark-color);
+    }
+  }
+
+  .xd-container {
+    background-color: var(--background-color);
+  }
+
+  .help-block {
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+}
