@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (template, menu)">
+<html th:fragment="layout (template, menu)" data-bs-theme="light">
 
 <head>
 
@@ -67,6 +67,15 @@
           </li>
 
         </ul>
+
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <button id="theme-toggle" class="btn btn-link nav-link">
+              <span class="fa fa-moon-o" id="dark-theme-icon"></span>
+              <span class="fa fa-sun-o" id="light-theme-icon" style="display: none;"></span>
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
@@ -88,6 +97,48 @@
   </div>
 
   <script th:src="@{/webjars/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
+
+  <script>
+    // Theme switcher functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkThemeIcon = document.getElementById('dark-theme-icon');
+      const lightThemeIcon = document.getElementById('light-theme-icon');
+
+      // Check for saved theme preference or use system preference
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      // Set initial theme
+      if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+        darkThemeIcon.style.display = 'none';
+        lightThemeIcon.style.display = 'inline';
+      } else {
+        document.documentElement.setAttribute('data-bs-theme', 'light');
+        darkThemeIcon.style.display = 'inline';
+        lightThemeIcon.style.display = 'none';
+      }
+
+      // Handle theme toggle click
+      themeToggle.addEventListener('click', function() {
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        document.documentElement.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        // Toggle icons
+        if (newTheme === 'dark') {
+          darkThemeIcon.style.display = 'none';
+          lightThemeIcon.style.display = 'inline';
+        } else {
+          darkThemeIcon.style.display = 'inline';
+          lightThemeIcon.style.display = 'none';
+        }
+      });
+    });
+  </script>
 
 </body>
 
