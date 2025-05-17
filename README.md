@@ -82,9 +82,55 @@ docker compose up postgres
 
 At development time we recommend you use the test applications set up as `main()` methods in `PetClinicIntegrationTests` (using the default H2 database and also adding Spring Boot Devtools), `MySqlTestApplication` and `PostgresIntegrationTests`. These are set up so that you can run the apps in your IDE to get fast feedback and also run the same classes as integration tests against the respective database. The MySql integration tests use Testcontainers to start the database in a Docker container, and the Postgres tests use Docker Compose to do the same thing.
 
+## UI with Tailwind CSS and shadcn Components
+
+The UI has been updated to use modern web technologies:
+
+- **Tailwind CSS**: A utility-first CSS framework for rapid UI development
+- **shadcn components**: A collection of accessible and customizable UI components
+
+### Prerequisites for UI Development
+
+- Node.js 18 or newer
+- npm 9 or newer
+
+### Building the UI
+
+1. Install Node.js dependencies:
+
+```bash
+npm install
+```
+
+2. Build the Tailwind CSS:
+
+```bash
+npm run build:css
+```
+
+For development, you can use watch mode to automatically rebuild the CSS when files change:
+
+```bash
+npm run watch:css
+```
+
+### UI Components
+
+The application uses the following shadcn components:
+
+- **Button**: Used for all buttons and links with button styling
+- **Input**: Used for all text and date input fields
+- **Select**: Used for all dropdown select fields
+
+These components are implemented as vanilla JavaScript classes that apply Tailwind CSS classes based on data attributes.
+
 ## Compiling the CSS
 
-There is a `petclinic.css` in `src/main/resources/static/resources/css`. It was generated from the `petclinic.scss` source, combined with the [Bootstrap](https://getbootstrap.com/) library. If you make changes to the `scss`, or upgrade Bootstrap, you will need to re-compile the CSS resources using the Maven profile "css", i.e. `./mvnw package -P css`. There is no build profile for Gradle to compile the CSS.
+There are two options for CSS in this project:
+
+1. **Tailwind CSS (Recommended)**: The `petclinic.css` in `src/main/resources/static/resources/css` is generated from the `tailwind-input.css` source using Tailwind CSS. To compile it, run `npm run build:css`.
+
+2. **Legacy SCSS**: The original CSS was generated from the `petclinic.scss` source, combined with the [Bootstrap](https://getbootstrap.com/) library. If you prefer to use this approach, you will need to re-compile the CSS resources using the Maven profile "css", i.e. `./mvnw package -P css`. There is no build profile for Gradle to compile the CSS.
 
 ## Working with Petclinic in your IDE
 
