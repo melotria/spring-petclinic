@@ -55,4 +55,27 @@ public interface VetRepository extends Repository<Vet, Integer> {
 	@Cacheable("vets")
 	Page<Vet> findAll(Pageable pageable) throws DataAccessException;
 
+	/**
+	 * Retrieve all <code>Vet</code>s from the data store with their specialties eagerly loaded.
+	 * This optimized query uses a join fetch to load the specialties in a single query.
+	 * @return a <code>Collection</code> of <code>Vet</code>s with specialties eagerly loaded
+	 */
+	@Transactional(readOnly = true)
+	@Cacheable("vets")
+	@org.springframework.data.jpa.repository.Query("SELECT DISTINCT vet FROM Vet vet LEFT JOIN FETCH vet.specialties")
+	Collection<Vet> findAllWithSpecialties() throws DataAccessException;
+
+	/**
+	 * Retrieve all <code>Vet</code>s from data store in Pages with their specialties eagerly loaded.
+	 * This optimized query uses a join fetch to load the specialties efficiently.
+	 * @param pageable
+	 * @return
+	 * @throws DataAccessException
+	 */
+	@Transactional(readOnly = true)
+	@Cacheable("vets")
+	@org.springframework.data.jpa.repository.Query(value = "SELECT DISTINCT vet FROM Vet vet LEFT JOIN FETCH vet.specialties",
+	                                              countQuery = "SELECT COUNT(DISTINCT vet) FROM Vet vet")
+	Page<Vet> findAllWithSpecialties(Pageable pageable) throws DataAccessException;
+
 }
