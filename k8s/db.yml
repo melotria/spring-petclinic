@@ -3,15 +3,12 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: demo-db
-type: servicebinding.io/postgresql
+type: servicebinding.io/redis
 stringData:
-  type: "postgresql"
-  provider: "postgresql"
+  type: "redis"
+  provider: "redis"
   host: "demo-db"
-  port: "5432"
-  database: "petclinic"
-  username: "user"
-  password: "pass"
+  port: "6379"
 
 ---
 apiVersion: v1
@@ -20,7 +17,7 @@ metadata:
   name: demo-db
 spec:
   ports:
-    - port: 5432
+    - port: 6379
   selector:
     app: demo-db
 
@@ -41,33 +38,24 @@ spec:
         app: demo-db
     spec:
       containers:
-        - image: postgres:17
-          name: postgresql
-          env:
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: demo-db
-                  key: username
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: demo-db
-                  key: password
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: demo-db
-                  key: database
+        - image: redis:7.2
+          name: redis
+          args: ["--appendonly", "yes"]
           ports:
-            - containerPort: 5432
-              name: postgresql
+            - containerPort: 6379
+              name: redis
           livenessProbe:
             tcpSocket:
-              port: postgresql
+              port: redis
           readinessProbe:
             tcpSocket:
-              port: postgresql
+              port: redis
           startupProbe:
             tcpSocket:
-              port: postgresql
+              port: redis
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-data
+          emptyDir: {}
