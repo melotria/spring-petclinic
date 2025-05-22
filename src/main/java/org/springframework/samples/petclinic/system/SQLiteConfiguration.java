@@ -13,35 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.springframework.samples.petclinic.system;
 
-package org.springframework.samples.petclinic;
+import java.sql.Types;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.hibernate.dialect.identity.IdentityColumnSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.testcontainers.containers.MySQLContainer;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
 
 /**
- * PetClinic Spring Boot Application.
+ * SQLite Configuration.
  *
- * @author Dave Syer
- *
+ * @author Junie Team
  */
 @Configuration
-public class MysqlTestApplication {
+@Profile("sqlite")
+public class SQLiteConfiguration {
 
-	@ServiceConnection
-	@Profile("mysql")
 	@Bean
-	static MySQLContainer<?> container() {
-		return new MySQLContainer<>("mysql:9.1");
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(PetClinicApplication.class, "--spring.profiles.active=mysql",
-				"--spring.docker.compose.enabled=false");
+	public DataSource dataSource() {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName("org.sqlite.JDBC");
+		dataSource.setUrl("jdbc:sqlite:petclinic.db");
+		return dataSource;
 	}
 
 }
