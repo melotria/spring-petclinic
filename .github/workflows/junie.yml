@@ -19,7 +19,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: melotria/junie-workflows/.github/workflows/ej-issue.yml@timeout
+    uses: jetbrains-junie/junie-workflows/.github/workflows/ej-issue.yml@staging
     with:
       workflow_params: ${{ inputs.workflow_params }}
       fix_conflicts: false
